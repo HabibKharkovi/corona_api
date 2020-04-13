@@ -4,8 +4,11 @@ const app = express()
 const port = 3000
 const request = require('request');
 const cheerio = require("cheerio");
+const serverless = require('serverless-http');
 
-app.get('/coronaviruses', cors(), (req, res) =>
+const router = express.Router();
+
+router.get('/', cors(), (req, res) =>
 
     request("https://www.worldometers.info/coronavirus/", function (error, response, body) {
         if (error) {
@@ -30,4 +33,7 @@ app.get('/coronaviruses', cors(), (req, res) =>
     })
 )
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.use('/.netlify/functions/api', router)
+module.exports.handler = serverless(app);
+
+
